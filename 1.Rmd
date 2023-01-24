@@ -67,38 +67,46 @@ calculateGA <- function(f, n, dimensions, population = 10, maxiter = 100){
 Ackley_2 <- smoof::addCountingWrapper(smoof::makeAckleyFunction(2))
 ```
 
-##### 1.1.1.1 PRS
-now complicated calculations begins
-```{r PRS_Ackley_2}
-solutions_PRS_Ackley_2 <- calculatePRS(Ackley_2, 50, 2, 1000)
-mean_PRS_Ackley_2 <- mean(solutions_PRS_Ackley_2)
-mean_PRS_Ackley_2
-```
-##### 1.1.1.2 GA
+##### 1.1.1.1 GA
 ```{r GA_Ackley_2}
+smoof::resetEvaluationCounter(Ackley_2)
 solutions_GA_Ackley_2 <- calculateGA(Ackley_2, n = 50, dimensions = 2)
 mean_GA_Ackley_2 <- mean(solutions_GA_Ackley_2)
 mean_GA_Ackley_2
+budget <- (smoof::getNumberOfEvaluations(Ackley_2)-50)/50
 ```
+
+##### 1.1.1.2 PRS
+now complicated calculations begins
+```{r PRS_Ackley_2}
+solutions_PRS_Ackley_2 <- calculatePRS(Ackley_2, 50, 2, budget)
+mean_PRS_Ackley_2 <- mean(solutions_PRS_Ackley_2)
+mean_PRS_Ackley_2
+```
+
 
 #### 1.1.2 Rosenbrock
 ```{r Rosenbrock_2}
 Rosenbrock_2 <- smoof::addCountingWrapper(smoof::makeRosenbrockFunction(2))
 ```
 
-##### 1.1.2.1 PRS
-now complicated calculations begins
-```{r PRS_Rosenbrock_2}
-solutions_PRS_Rosenbrock_2 <- calculatePRS(Rosenbrock_2, 50, 2, 1000)
-mean_PRS_Rosenbrock_2 <- mean(solutions_PRS_Rosenbrock_2)
-mean_PRS_Rosenbrock_2
-```
-##### 1.1.2.2 GA
+##### 1.1.2.1 GA
 ```{r GA_Rosenbrock_2}
+smoof::resetEvaluationCounter(Rosenbrock_2)
 solutions_GA_Rosenbrock_2 <- calculateGA(Rosenbrock_2, n = 50, dimensions = 2)
 mean_GA_Rosenbrock_2 <- mean(solutions_GA_Rosenbrock_2)
 mean_GA_Rosenbrock_2
+budget <- (smoof::getNumberOfEvaluations(Rosenbrock_2)-50)/50
 ```
+
+##### 1.1.2.2 PRS
+now complicated calculations begins
+```{r PRS_Rosenbrock_2}
+solutions_PRS_Rosenbrock_2 <- calculatePRS(Rosenbrock_2, 50, 2, budget)
+mean_PRS_Rosenbrock_2 <- mean(solutions_PRS_Rosenbrock_2)
+mean_PRS_Rosenbrock_2
+```
+
 
 
 ### 1.2 Dziesięć wymiarów
@@ -108,38 +116,46 @@ mean_GA_Rosenbrock_2
 Ackley_10 <- smoof::addCountingWrapper(smoof::makeAckleyFunction(10))
 ```
 
-##### 1.2.1.1 PRS
-now complicated calculations begins
-```{r PRS_Ackley_10}
-solutions_PRS_Ackley_10 <- calculatePRS(Ackley_10, 50, 10, 1000)
-mean_PRS_Ackley_10 <- mean(solutions_PRS_Ackley_10)
-mean_PRS_Ackley_10
-```
-##### 1.2.1.2 GA
+
+##### 1.2.1.1 GA
 ```{r GA_Ackley_10}
+smoof::resetEvaluationCounter(Ackley_10)
 solutions_GA_Ackley_10 <- calculateGA(Ackley_10, n = 50, dimensions = 10)
 mean_GA_Ackley_10 <- mean(solutions_GA_Ackley_10)
 mean_GA_Ackley_10
+budget <- (smoof::getNumberOfEvaluations(Ackley_10)-50)/50
 ```
+
+##### 1.2.1.2 PRS
+now complicated calculations begins
+```{r PRS_Ackley_10}
+solutions_PRS_Ackley_10 <- calculatePRS(Ackley_10, 50, 10, budget)
+mean_PRS_Ackley_10 <- mean(solutions_PRS_Ackley_10)
+mean_PRS_Ackley_10
+```
+
 #### 1.2.2 Rosenbrock
 ```{r Rosenbrock_10}
 Rosenbrock_10 <- smoof::addCountingWrapper(smoof::makeRosenbrockFunction(10))
 ```
 
-##### 1.2.2.1 PRS
+##### 1.2.2.1 GA
+```{r GA_Rosenbrock_10}
+smoof::resetEvaluationCounter(Rosenbrock_10)
+solutions_GA_Rosenbrock_10 <- calculateGA(Rosenbrock_10, n = 50, dimensions = 10)
+mean_GA_Rosenbrock_10 <- mean(solutions_GA_Rosenbrock_10)
+mean_GA_Rosenbrock_10
+budget <- (smoof::getNumberOfEvaluations(Rosenbrock_10)-50)/50
+```
+
+##### 1.2.2.2 PRS
 now complicated calculations begins
 ```{r PRS_Rosenbrock_10}
-solutions_PRS_Rosenbrock_10 <- calculatePRS(Rosenbrock_10, 50, 10, 1000)
+solutions_PRS_Rosenbrock_10 <- calculatePRS(Rosenbrock_10, 50, 10, budget)
 mean_PRS_Rosenbrock_10 <- mean(solutions_PRS_Rosenbrock_10)
 mean_PRS_Rosenbrock_10
 ```
 
-##### 1.2.2.2 GA
-```{r GA_Rosenbrock_10}
-solutions_GA_Rosenbrock_10 <- calculateGA(Rosenbrock_10, n = 50, dimensions = 10)
-mean_GA_Rosenbrock_10 <- mean(solutions_GA_Rosenbrock_10)
-mean_GA_Rosenbrock_10
-```
 
 ### 1.3 tak z milion wymiarów
 
@@ -148,38 +164,43 @@ mean_GA_Rosenbrock_10
 Ackley_20 <- smoof::addCountingWrapper(smoof::makeAckleyFunction(20))
 ```
 
-##### 1.3.1.1 PRS
-now complicated calculations begins
-```{r PRS_Ackley_20}
-solutions_PRS_Ackley_20 <- calculatePRS(Ackley_20, 50, 20, 1000)
-mean_PRS_Ackley_20 <- mean(solutions_PRS_Ackley_20)
-mean_PRS_Ackley_20
-```
-##### 1.3.1.2 GA
+##### 1.3.1.1 GA
 ```{r GA_Ackley_20}
+smoof::resetEvaluationCounter(Ackley_20)
 solutions_GA_Ackley_20 <- calculateGA(Ackley_20, n = 50, dimensions = 20)
 mean_GA_Ackley_20 <- mean(solutions_GA_Ackley_20)
 mean_GA_Ackley_20
+budget <- (smoof::getNumberOfEvaluations(Ackley_20)-50)/50
 ```
+##### 1.3.1.2 PRS
+now complicated calculations begins
+```{r PRS_Ackley_20}
+solutions_PRS_Ackley_20 <- calculatePRS(Ackley_20, 50, 20, budget)
+mean_PRS_Ackley_20 <- mean(solutions_PRS_Ackley_20)
+mean_PRS_Ackley_20
+```
+
 #### 1.3.2 Rosenbrock
 ```{r Rosenbrock_20}
 Rosenbrock_20 <- smoof::addCountingWrapper(smoof::makeRosenbrockFunction(20))
 ```
 
-##### 1.3.2.1 PRS
+##### 1.3.2.1 GA
+```{r GA_Rosenbrock_20}
+smoof::resetEvaluationCounter(Rosenbrock_20)
+solutions_GA_Rosenbrock_20 <- calculateGA(Rosenbrock_20, n = 50, dimensions = 20)
+mean_GA_Rosenbrock_20 <- mean(solutions_GA_Rosenbrock_20)
+mean_GA_Rosenbrock_20
+budget <- (smoof::getNumberOfEvaluations(Rosenbrock_20)-50)/50
+``` 
+##### 1.3.2.2 PRS
 now complicated calculations begins
 ```{r PRS_Rosenbrock_20}
-solutions_PRS_Rosenbrock_20 <- calculatePRS(Rosenbrock_20, 50, 20, 1000)
+solutions_PRS_Rosenbrock_20 <- calculatePRS(Rosenbrock_20, 50, 20, budget)
 mean_PRS_Rosenbrock_20 <- mean(solutions_PRS_Rosenbrock_20)
 mean_PRS_Rosenbrock_20
 ```
 
-##### 1.3.2.2 GA
-```{r GA_Rosenbrock_20}
-solutions_GA_Rosenbrock_20 <- calculateGA(Rosenbrock_20, n = 50, dimensions = 20)
-mean_GA_Rosenbrock_20 <- mean(solutions_GA_Rosenbrock_20)
-mean_GA_Rosenbrock_20
-``` 
 5. Graphs goes brr
 
 5.0 Creating df
@@ -218,8 +239,18 @@ mean_GA_Rosenbrock_20
     p3 <- ggplot(df %>% filter(dimensions == 20, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=50000)
 ```
-Tworzenie wykresóW
-```{r plot_Ackley_2}
+### Porównanie 
+
+#### Funkcja Ackley'a 2 wymiary
+
+```{r t.test_Ackley_2, echo=FALSE}
+t.test( solutions_PRS_Ackley_2, solutions_GA_Ackley_2 )
+```
+p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założyć, że funkcje zwaracają różne wyniki
+
+
+##### Rozłożenie wyników
+```{r plot_Ackley_2, echo=FALSE}
   plot_Ackley_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
 
@@ -230,6 +261,9 @@ Tworzenie wykresóW
         axis.ticks.x=element_blank())
 
   grid.arrange(plot_Ackley_2_hist, arrangeGrob(plot_GA_Ackley_2_violin, plot_PRS_Ackley_2_violin), ncol=2,top = "Ackley 2 dimensions" )
+```
+```{r t.test_Ackley_10}
+t.test( solutions_PRS_Ackley_10, solutions_GA_Ackley_10 )
 ```
 ```{r plot_Ackley_10}
   plot_Ackley_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Ackley"), aes(x=values, color=algorithm))+
@@ -243,6 +277,10 @@ Tworzenie wykresóW
 
   grid.arrange(plot_Ackley_10_hist, arrangeGrob(plot_GA_Ackley_10_violin, plot_PRS_Ackley_10_violin), ncol=2,top = "Ackley 10 dimensions" )
 ```
+
+```{r t.test_Ackley_20}
+t.test( solutions_PRS_Ackley_20, solutions_GA_Ackley_20 )
+```
 ```{r plot_Ackley_20}
   plot_Ackley_20_hist <- ggplot(df %>% filter(dimensions == 20, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
@@ -255,6 +293,10 @@ Tworzenie wykresóW
 
   grid.arrange(plot_Ackley_20_hist, arrangeGrob(plot_GA_Ackley_20_violin, plot_PRS_Ackley_20_violin), ncol=2,top = "Ackley 20 dimensions" )
 ```
+```{r t.test_Rosenbrock_2}
+t.test( solutions_PRS_Rosenbrock_2, solutions_GA_Rosenbrock_2 )
+```
+
 ```{r plot_Rosenbrock_2}
   plot_Rosenbrock_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
@@ -267,6 +309,10 @@ Tworzenie wykresóW
 
   grid.arrange(plot_Rosenbrock_2_hist, arrangeGrob(plot_GA_Rosenbrock_2_violin, plot_PRS_Rosenbrock_2_violin), ncol=2,top = "Rosenbrock 2 dimensions" )
 ```
+
+```{r t.test_Rosenbrock_10}
+t.test( solutions_PRS_Rosenbrock_2, solutions_GA_Rosenbrock_10 )
+```
 ```{r plot_Rosenbrock_10}
   plot_Rosenbrock_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=5000)
@@ -278,6 +324,10 @@ Tworzenie wykresóW
         axis.ticks.x=element_blank())
 
   grid.arrange(plot_Rosenbrock_10_hist, arrangeGrob(plot_GA_Rosenbrock_10_violin, plot_PRS_Rosenbrock_10_violin), ncol=2,top = "Rosenbrock 10 dimensions" )
+```
+
+```{r t.test_Rosenbrock_20}
+t.test( solutions_PRS_Rosenbrock_20, solutions_GA_Rosenbrock_20 )
 ```
 ```{r plot_Rosenbrock_20}
   plot_Rosenbrock_20_hist <- ggplot(df %>% filter(dimensions == 20, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
@@ -293,14 +343,5 @@ Tworzenie wykresóW
 ```
 
 
-```{r}
-t.test( solutions_PRS_Ackley_2, solutions_GA_Ackley_2 )
-```
 
-```{r}
-t.test( solutions_PRS_Ackley_10, solutions_GA_Ackley_10 )
-```
 
-```{r}
-t.test( solutions_PRS_Ackley_20, solutions_GA_Ackley_20 )
-```
