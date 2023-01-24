@@ -10,7 +10,7 @@ output: html_document
 ## Użyte funkcje
 
 ### 1. GE(Guardian angel)
-![Caption for the picture.](C:/fastTravel/Guardian_Angel_item_HD.png)\
+<!-- ![Caption for the picture.](C:/fastTravel/Guardian_Angel_item_HD.png)\ -->
 
 3000 Gold 3000 (150 Gold 150)
 -B. F. Sword
@@ -293,3 +293,14 @@ Tworzenie wykresóW
 ```
 
 
+```{r}
+t.test( solutions_PRS_Ackley_2, solutions_GA_Ackley_2 )
+```
+
+```{r}
+t.test( solutions_PRS_Ackley_10, solutions_GA_Ackley_10 )
+```
+
+```{r}
+t.test( solutions_PRS_Ackley_20, solutions_GA_Ackley_20 )
+```
