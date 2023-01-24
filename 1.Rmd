@@ -27,7 +27,6 @@ PRS <- function(f, n, dimensions=1){
   values <- replicate(n, f(runif(dimensions, min = minimum, max = maximum)));
   return(min(values))
 }
-
 ```
 
 ## Funkcje zwracające wyniki
@@ -38,7 +37,7 @@ calculatePRS <- function(f,n, dimensions, budget = 1000){
   return(temp_sol)
 }
 
-calculateGA <- function(f, n, dimensions, population = 50, maxiter = 200){
+calculateGA <- function(f, n, dimensions, population = 10, maxiter = 100){
   minimum <- unname(smoof::getLowerBoxConstraints(f)[1])
   maximum <- unname(smoof::getUpperBoxConstraints(f)[1])
   fitness <- function(x) -f(x)
@@ -60,7 +59,8 @@ calculateGA <- function(f, n, dimensions, population = 50, maxiter = 200){
 
 #### 1.1.1 Ackley
 ```{r Ackley_2}
-Ackley_2 <- smoof::makeAckleyFunction(2)
+Ackley_2 <- smoof::addCountingWrapper(smoof::makeAckleyFunction(2))
+smoof::getNumberOfEvaluations(Ackley_2)
 ```
 
 ##### 1.1.1.1 PRS
@@ -69,13 +69,18 @@ now complicated calculations begins
 solutions_PRS_Ackley_2 <- calculatePRS(Ackley_2, 50, 2, 1000)
 mean_PRS_Ackley_2 <- mean(solutions_PRS_Ackley_2)
 mean_PRS_Ackley_2
+smoof::getNumberOfEvaluations(Ackley_2)
+smoof::resetEvaluationCounter(Ackley_2)
 ```
 ##### 1.1.1.2 GA
 ```{r GA_Ackley_2}
 solutions_GA_Ackley_2 <- calculateGA(Ackley_2, n = 50, dimensions = 2)
 mean_GA_Ackley_2 <- mean(solutions_GA_Ackley_2)
 mean_GA_Ackley_2
+smoof::getNumberOfEvaluations(Ackley_2)
+smoof::resetEvaluationCounter(Ackley_2)
 ```
+
 #### 1.1.2 Rosenbrock
 ```{r Rosenbrock_2}
 Rosenbrock_2 <- smoof::makeRosenbrockFunction(2)
@@ -101,19 +106,25 @@ mean_GA_Rosenbrock_2
 #### 1.2.1 Ackley
 ```{r Ackley_10}
 Ackley_10 <- smoof::makeAckleyFunction(10)
+Ackley_10 <- smoof::addCountingWrapper(smoof::makeAckleyFunction(10))
 ```
 
 ##### 1.2.1.1 PRS
 now complicated calculations begins
 ```{r PRS_Ackley_10}
 solutions_PRS_Ackley_10 <- calculatePRS(Ackley_10, 50, 10, 1000)
+smoof::getNumberOfEvaluations(Ackley_10)
+smoof::resetEvaluationCounter(Ackley_10)
 mean_PRS_Ackley_10 <- mean(solutions_PRS_Ackley_10)
 mean_PRS_Ackley_10
 ```
 ##### 1.2.1.2 GA
 ```{r GA_Ackley_10}
 solutions_GA_Ackley_10 <- calculateGA(Ackley_10, n = 50, dimensions = 10)
+smoof::getNumberOfEvaluations(Ackley_10)
+smoof::resetEvaluationCounter(Ackley_10)
 mean_GA_Ackley_10 <- mean(solutions_GA_Ackley_10)
+
 mean_GA_Ackley_10
 ```
 #### 1.2.2 Rosenbrock
@@ -159,6 +170,8 @@ mean_GA_Ackley_20
 #### 1.3.2 Rosenbrock
 ```{r Rosenbrock_20}
 Rosenbrock_20 <- smoof::makeRosenbrockFunction(20)
+?smoof::makeRosenbrockFunction(20)
+Rosenbrock_2(c(2,2))
 ```
 
 ##### 1.3.2.1 PRS
@@ -174,19 +187,147 @@ mean_PRS_Rosenbrock_20
 solutions_GA_Rosenbrock_20 <- calculateGA(Rosenbrock_20, n = 50, dimensions = 20)
 mean_GA_Rosenbrock_20 <- mean(solutions_GA_Rosenbrock_20)
 mean_GA_Rosenbrock_20
-```
+``` 
 5. Graphs goes brr
 
-5.1 2 wymiary
+5.0 Creating df
+```{r dataframe}
+library(tidyverse)
+library(cowplot)
+  r1 <- replicate(300, "PRS")
+  r2 <- replicate(300, "GA")
+  algorithm <- c(r1,r2)
+  f1 <- replicate(150, "Ackley")
+  f2 <- replicate(150, "Rosenbrock")
+  f3 <- replicate(150, "Ackley")
+  f4 <- replicate(150, "Rosenbrock")
+  fun <- c(f1,f2,f3,f4)  
+  d1 <- replicate(50, 2)
+  d2 <- replicate(50, 10)
+  d3 <- replicate(50, 20)
+  d4 <- replicate(50, 2)
+  d5 <- replicate(50, 10)
+  d6 <- replicate(50, 20)
+  dimensions <- c(d1,d2,d3,d4,d5,d6)
+  values <- c(solutions_PRS_Ackley_2, solutions_PRS_Ackley_10, solutions_PRS_Ackley_20, solutions_PRS_Rosenbrock_2, solutions_PRS_Rosenbrock_10, solutions_PRS_Rosenbrock_20, solutions_GA_Ackley_2, solutions_GA_Ackley_10, solutions_GA_Ackley_20, solutions_GA_Rosenbrock_2, solutions_GA_Rosenbrock_10, solutions_GA_Rosenbrock_20)
+  df <- data.frame(values, dimensions, fun, algorithm)
+  df[,'dimensions']<-factor(df[,'dimensions'])
+  df[,'fun']<-factor(df[,'fun'])
+  df[,'algorithm']<-factor(df[,'algorithm'])
+  df
+  
+  hist1 <- df %>% filter(dimensions == 2, fun == "Rosenbrock")
+    p1 <- ggplot(hist1, aes(x=values, color=algorithm))+
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
+    p2 <- ggplot(df %>% filter(dimensions == 10, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=5000)
+    p3 <- ggplot(df %>% filter(dimensions == 20, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=50000)
+    
+```
+```{r hist 1}
+  grid.arrange(p3, arrangeGrob(vp3, vp6), ncol=2,top = "Ackley 2 dimensions" )
+```
+```{r hist 2}
+  p2
+```
+```{r hist 3}
+  grid.arrange(p3, arrangeGrob(vp3, vp6), ncol=2,top = "Ackley 20 dimensions" )
+```
+Idyvidual plots
+```{r indiv}
+vp1 <- df %>% filter(algorithm == "PRS", fun == "Rosenbrock", dimensions == 2) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank())
+vp2 <- df %>% filter(algorithm == "PRS", fun == "Rosenbrock", dimensions == 10) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank())
+vp3 <- df %>% filter(algorithm == "PRS", fun == "Rosenbrock", dimensions == 20) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank())
+
+grid.arrange(vp1, vp2,vp3,bp, ncol = 3)
+grid.arrange(bp, arrangeGrob(vp1, vp2,vp3), ncol = 2)
+vp4 <- df %>% filter(algorithm == "GA", fun == "Rosenbrock", dimensions == 2) %>% ggplot(aes(x=dimensions, y=values, color="red")) +  geom_violin()+ geom_boxplot(width=0.1)+ theme(legend.position = "none",axis.title.x = element_blank())
+vp5 <- df %>% filter(algorithm == "GA", fun == "Rosenbrock", dimensions == 10) %>% ggplot(aes(x=dimensions, y=values, color="red")) +  geom_violin()+ geom_boxplot(width=0.1)+ theme(legend.position = "none",axis.title.x = element_blank())
+vp6 <- df %>% filter(algorithm == "GA", fun == "Rosenbrock", dimensions == 20) %>% ggplot(aes(x=dimensions, y=values, color="red")) +  geom_violin()+ geom_boxplot(width=0.1)+ theme(legend.position = "none",axis.title.x = element_blank())
+
+```
+
+
+5.1 Ackley
 ```{r plot_Ackley_2}
 library(ggplot2)
+library(gridExtra)
   r1 <- replicate(50, "PRS")
   r2 <- replicate(50, "GA")
-  algorithm <- c(r1, r2)
-  solutions_Ackley_2 <- c(solutions_PRS_Ackley_2, solutions_GA_Ackley_2)
-  df <- data.frame(solutions_PRS_Ackley_2, r1)
-  p <- ggplot(df, aes(x=r1, y=solutions_PRS_Ackley_2)) + 
-  geom_violin()
-  p
+
+  p1 <- ggplot(df, aes(x=r1, y=solutions_PRS_Ackley_2)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p2 <- ggplot(df, aes(x=r1, y=solutions_PRS_Ackley_10)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p3 <- ggplot(df, aes(x=r1, y=solutions_PRS_Ackley_20)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p4 <- ggplot(df, aes(x=r2, y=solutions_GA_Ackley_2)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p5 <- ggplot(df, aes(x=r2, y=solutions_GA_Ackley_10)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p6 <- ggplot(df, aes(x=r2, y=solutions_GA_Ackley_20)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  grid.arrange(p1, p2, p3, p4, p5, p6, ncol=3, nrow=2)
+  
+```
+5.2 Rosenberg
+```{r plot_Rosneberg}
+library(ggplot2)
+library(gridExtra)
+  r1 <- replicate(50, "PRS")
+  r2 <- replicate(50, "GA")
+
+  p1 <- ggplot(df, aes(x=r1, y=solutions_PRS_Rosenbrock_2)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p2 <- ggplot(df, aes(x=r1, y=solutions_PRS_Rosenbrock_10)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p3 <- ggplot(df, aes(x=r1, y=solutions_PRS_Rosenbrock_20)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p4 <- ggplot(df, aes(x=r2, y=solutions_GA_Rosenbrock_2)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p5 <- ggplot(df, aes(x=r2, y=solutions_GA_Rosenbrock_10)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  p6 <- ggplot(df, aes(x=r2, y=solutions_GA_Rosenbrock_20)) + 
+  geom_violin()+ geom_boxplot(width=0.1)
+  
+  grid.arrange(p1, p2, p3, p4, p5, p6, ncol=3, nrow=2)
+  
+```
+5.3 Hostoria
+```{r plot_Ackley_2}
+library(ggplot2)
+library(gridExtra)
+  r1 <- replicate(50, "PRS")
+  r2 <- replicate(50, "GA")
+  empty <- data.frame()
+
+  p1 <- ggplot(empty, aes(x=solutions_PRS_Ackley_2))+ geom_histogram(binwidth=0.7)
+  
+  p2 <- ggplot(empty, aes(x=solutions_PRS_Ackley_10)) + geom_histogram(binwidth=0.5)
+  
+  p3 <- ggplot(empty, aes(x=solutions_PRS_Ackley_20))+ geom_histogram(binwidth=0.5)
+  
+  p4 <- ggplot(empty, aes(x=solutions_GA_Ackley_2)) + geom_histogram(binwidth=0.5)
+  
+  p5 <- ggplot(empty, aes(x=solutions_GA_Ackley_10)) + geom_histogram(binwidth=0.5)
+  
+  p6 <- ggplot(empty, aes(x=solutions_GA_Ackley_20)) + geom_histogram(binwidth=0.5)
+  grid.arrange(p1, p2, p3, p4, p5, p6, ncol=3, nrow=2)
+  
+```
+```{r t test}
+t.test(solutions_PRS_Ackley_2,solutions_GA_Ackley_2)
 ```
 
