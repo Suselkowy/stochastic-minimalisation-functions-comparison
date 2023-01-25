@@ -1,11 +1,17 @@
 ---
 title: "Projekt statystyka"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 ```{r initial, results='hide', message=FALSE, warning=FALSE}
   library(tidyverse)
   library(ggplot2)
   library(gridExtra)
+```
+```{r include = FALSE}
+knitr::opts_chunk$set(echo=FALSE)
+set.seed(420)
 ```
 ## Użyte funkcje
 
@@ -243,12 +249,6 @@ mean_PRS_Rosenbrock_20
 
 #### Funkcja Ackley'a 2 wymiary
 
-```{r t.test_Ackley_2, echo=FALSE}
-t.test( solutions_PRS_Ackley_2, solutions_GA_Ackley_2 )
-```
-p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założyć, że funkcje zwaracają różne wyniki
-
-
 ##### Rozłożenie wyników
 ```{r plot_Ackley_2, echo=FALSE}
   plot_Ackley_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Ackley"), aes(x=values, color=algorithm))+
@@ -262,9 +262,18 @@ p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założ
 
   grid.arrange(plot_Ackley_2_hist, arrangeGrob(plot_GA_Ackley_2_violin, plot_PRS_Ackley_2_violin), ncol=2,top = "Ackley 2 dimensions" )
 ```
-```{r t.test_Ackley_10}
-t.test( solutions_PRS_Ackley_10, solutions_GA_Ackley_10 )
+
+
+```{r t.test_Ackley_2, echo=FALSE}
+t.test( solutions_PRS_Ackley_2, solutions_GA_Ackley_2 )
 ```
+p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założyć, że funkcje zwaracają różne wyniki
+
+<br>
+
+#### Funkcja Ackley'a 10 wymiarów
+
+<br>
 ```{r plot_Ackley_10}
   plot_Ackley_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
@@ -277,10 +286,14 @@ t.test( solutions_PRS_Ackley_10, solutions_GA_Ackley_10 )
 
   grid.arrange(plot_Ackley_10_hist, arrangeGrob(plot_GA_Ackley_10_violin, plot_PRS_Ackley_10_violin), ncol=2,top = "Ackley 10 dimensions" )
 ```
-
-```{r t.test_Ackley_20}
-t.test( solutions_PRS_Ackley_20, solutions_GA_Ackley_20 )
+```{r t.test_Ackley_10}
+t.test( solutions_PRS_Ackley_10, solutions_GA_Ackley_10 )
 ```
+<br>
+
+#### Funkcja Ackley'a 20 wymiarów
+
+<br>
 ```{r plot_Ackley_20}
   plot_Ackley_20_hist <- ggplot(df %>% filter(dimensions == 20, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
@@ -293,10 +306,14 @@ t.test( solutions_PRS_Ackley_20, solutions_GA_Ackley_20 )
 
   grid.arrange(plot_Ackley_20_hist, arrangeGrob(plot_GA_Ackley_20_violin, plot_PRS_Ackley_20_violin), ncol=2,top = "Ackley 20 dimensions" )
 ```
-```{r t.test_Rosenbrock_2}
-t.test( solutions_PRS_Rosenbrock_2, solutions_GA_Rosenbrock_2 )
+```{r t.test_Ackley_20}
+t.test( solutions_PRS_Ackley_20, solutions_GA_Ackley_20 )
 ```
+<br>
 
+#### Funkcja Rosenbrock'a 2 wymiary
+
+<br>
 ```{r plot_Rosenbrock_2}
   plot_Rosenbrock_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
@@ -309,10 +326,14 @@ t.test( solutions_PRS_Rosenbrock_2, solutions_GA_Rosenbrock_2 )
 
   grid.arrange(plot_Rosenbrock_2_hist, arrangeGrob(plot_GA_Rosenbrock_2_violin, plot_PRS_Rosenbrock_2_violin), ncol=2,top = "Rosenbrock 2 dimensions" )
 ```
-
-```{r t.test_Rosenbrock_10}
-t.test( solutions_PRS_Rosenbrock_2, solutions_GA_Rosenbrock_10 )
+```{r t.test_Rosenbrock_2}
+t.test( solutions_PRS_Rosenbrock_2, solutions_GA_Rosenbrock_2 )
 ```
+<br>
+
+#### Funkcja Rosenbrock'a 10 wymiarów
+
+<br>
 ```{r plot_Rosenbrock_10}
   plot_Rosenbrock_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=5000)
@@ -325,10 +346,14 @@ t.test( solutions_PRS_Rosenbrock_2, solutions_GA_Rosenbrock_10 )
 
   grid.arrange(plot_Rosenbrock_10_hist, arrangeGrob(plot_GA_Rosenbrock_10_violin, plot_PRS_Rosenbrock_10_violin), ncol=2,top = "Rosenbrock 10 dimensions" )
 ```
-
-```{r t.test_Rosenbrock_20}
-t.test( solutions_PRS_Rosenbrock_20, solutions_GA_Rosenbrock_20 )
+```{r t.test_Rosenbrock_10}
+t.test( solutions_PRS_Rosenbrock_2, solutions_GA_Rosenbrock_10 )
 ```
+<br>
+
+#### Funkcja Rosenbrock'a 20 wymiarów
+
+<br>
 ```{r plot_Rosenbrock_20}
   plot_Rosenbrock_20_hist <- ggplot(df %>% filter(dimensions == 20, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=10000)
@@ -341,7 +366,10 @@ t.test( solutions_PRS_Rosenbrock_20, solutions_GA_Rosenbrock_20 )
 
   grid.arrange(plot_Rosenbrock_20_hist, arrangeGrob(plot_GA_Rosenbrock_20_violin, plot_PRS_Rosenbrock_20_violin), ncol=2,top = "Rosenbrock 20 dimensions" )
 ```
+```{r t.test_Rosenbrock_20}
+t.test( solutions_PRS_Rosenbrock_20, solutions_GA_Rosenbrock_20 )
+```
 
-
+<br>
 
 
