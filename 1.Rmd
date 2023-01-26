@@ -6,10 +6,14 @@ output:
 ---
 ```{r include = FALSE}
 knitr::opts_chunk$set(echo=FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
 set.seed(420)
-nOfRuns <- 50
+nOfRuns <- 20
 populationSize <- 10
 budgetSum <- 0
+pValues <- c()
+confs <- c()
 ```
 ```{r initial, results='hide', message=FALSE, warning=FALSE}
   library(tidyverse)
@@ -276,6 +280,7 @@ GA_Rosenbrock_20_stats
 
 budget <- (smoof::getNumberOfEvaluations(Rosenbrock_20) - nOfRuns) / nOfRuns
 budgetSum <- budgetSum + budget
+budgetSum <- budgetSum / 6
 ``` 
 
 ##### PRS
@@ -336,9 +341,13 @@ PRS_Rosenbrock_20_stats
   grid.arrange(plot_Ackley_2_hist, arrangeGrob(plot_GA_Ackley_2_violin, plot_PRS_Ackley_2_violin), ncol=2,top = "Ackley 2 dimensions" )
 ```
 
+Na wykresie widzimy, że większość otrzymanych wartości skupia się w okół mediany.
 
 ```{r t.test_Ackley_2, echo=FALSE}
-t.test( solutions_GA_Ackley_2, solutions_PRS_Ackley_2 )
+t1 = t.test( solutions_GA_Ackley_2, solutions_PRS_Ackley_2 )
+pValues <- append(pValues, t1$p.value)
+confs <- append(confs, t1$conf.int)
+t1
 ```
 p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założyć, że funkcje zwaracają różne wyniki
 
@@ -360,7 +369,10 @@ p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założ
   grid.arrange(plot_Ackley_10_hist, arrangeGrob(plot_GA_Ackley_10_violin, plot_PRS_Ackley_10_violin), ncol=2,top = "Ackley 10 dimensions" )
 ```
 ```{r t.test_Ackley_10}
-t.test( solutions_GA_Ackley_10, solutions_PRS_Ackley_10 )
+t2 = t.test( solutions_GA_Ackley_10, solutions_PRS_Ackley_10 )
+pValues <- append(pValues, t2$p.value)
+confs <- append(confs, t2$conf.int)
+t2
 ```
 <br>
 
@@ -380,7 +392,10 @@ t.test( solutions_GA_Ackley_10, solutions_PRS_Ackley_10 )
   grid.arrange(plot_Ackley_20_hist, arrangeGrob(plot_GA_Ackley_20_violin, plot_PRS_Ackley_20_violin), ncol=2,top = "Ackley 20 dimensions" )
 ```
 ```{r t.test_Ackley_20}
-t.test( solutions_GA_Ackley_20, solutions_PRS_Ackley_20 )
+t3 = t.test( solutions_GA_Ackley_20, solutions_PRS_Ackley_20 )
+pValues <- append(pValues, t3$p.value)
+confs <- append(confs, t3$conf.int)
+t3
 ```
 <br>
 
@@ -400,7 +415,10 @@ t.test( solutions_GA_Ackley_20, solutions_PRS_Ackley_20 )
   grid.arrange(plot_Rosenbrock_2_hist, arrangeGrob(plot_GA_Rosenbrock_2_violin, plot_PRS_Rosenbrock_2_violin), ncol=2,top = "Rosenbrock 2 dimensions" )
 ```
 ```{r t.test_Rosenbrock_2}
-t.test( solutions_GA_Rosenbrock_2, solutions_PRS_Rosenbrock_2 )
+t4 = t.test( solutions_GA_Rosenbrock_2, solutions_PRS_Rosenbrock_2 )
+pValues <- append(pValues, t4$p.value)
+confs <- append(confs, t4$conf.int)
+t4
 ```
 <br>
 
@@ -420,7 +438,10 @@ t.test( solutions_GA_Rosenbrock_2, solutions_PRS_Rosenbrock_2 )
   grid.arrange(plot_Rosenbrock_10_hist, arrangeGrob(plot_GA_Rosenbrock_10_violin, plot_PRS_Rosenbrock_10_violin), ncol=2,top = "Rosenbrock 10 dimensions" )
 ```
 ```{r t.test_Rosenbrock_10}
-t.test( solutions_GA_Rosenbrock_10, solutions_PRS_Rosenbrock_10 )
+t5 = t.test( solutions_GA_Rosenbrock_10, solutions_PRS_Rosenbrock_10 )
+pValues <- append(pValues, t5$p.value)
+confs <- append(confs, t5$conf.int)
+t5
 ```
 <br>
 
@@ -440,23 +461,28 @@ t.test( solutions_GA_Rosenbrock_10, solutions_PRS_Rosenbrock_10 )
   grid.arrange(plot_Rosenbrock_20_hist, arrangeGrob(plot_GA_Rosenbrock_20_violin, plot_PRS_Rosenbrock_20_violin), ncol=2,top = "Rosenbrock 20 dimensions" )
 ```
 ```{r t.test_Rosenbrock_20}
-t.test( solutions_GA_Rosenbrock_20, solutions_PRS_Rosenbrock_20 )
+t6 = t.test( solutions_GA_Rosenbrock_20, solutions_PRS_Rosenbrock_20 )
+pValues <- append(pValues, t6$p.value)
+confs <- append(confs, t6$conf.int)
+t6
 ```
 
 <br>
 
 #### Podsumowanie
 
+Średnio wykorzystany budżet na jedną iterację `r budgetSum`
+
 ``` {r summary, results='asis', message=FALSE, warning=FALSE}
 tableData <- data.frame(
-  Dimensions = c( 2,2,10,10,20,20 ),
-  Algorithm = c(replicate(3,c("GA","PRS"))),
-    Mean = c( GA_Ackley_2_stats[1], PRS_Ackley_2_stats[1], GA_Ackley_10_stats[1], PRS_Ackley_10_stats[1], GA_Ackley_20_stats[1], PRS_Ackley_20_stats[1],
-          GA_Rosenbrock_2_stats[1], PRS_Rosenbrock_2_stats[1], GA_Rosenbrock_10_stats[1], PRS_Rosenbrock_10_stats[1], GA_Rosenbrock_20_stats[1],
+  Dimensions = c( 2,10,20 ),
+  Algorithm = c(replicate(3,"GA"),replicate(3,"PRS")),
+    Mean = c( GA_Ackley_2_stats[1], GA_Ackley_10_stats[1], GA_Ackley_20_stats[1], PRS_Ackley_2_stats[1], PRS_Ackley_10_stats[1], PRS_Ackley_20_stats[1],
+          GA_Rosenbrock_2_stats[1], GA_Rosenbrock_10_stats[1], GA_Rosenbrock_20_stats[1], PRS_Rosenbrock_2_stats[1], PRS_Rosenbrock_10_stats[1],
           PRS_Rosenbrock_20_stats[1]
           ),
-  Median = c( GA_Ackley_2_stats[2], PRS_Ackley_2_stats[2], GA_Ackley_10_stats[2], PRS_Ackley_10_stats[2], GA_Ackley_20_stats[2], PRS_Ackley_20_stats[2],
-            GA_Rosenbrock_2_stats[2], PRS_Rosenbrock_2_stats[2], GA_Rosenbrock_10_stats[2], PRS_Rosenbrock_10_stats[2], GA_Rosenbrock_20_stats[2],
+  Median = c( GA_Ackley_2_stats[2], GA_Ackley_10_stats[2], GA_Ackley_20_stats[2], PRS_Ackley_2_stats[2], PRS_Ackley_10_stats[2], PRS_Ackley_20_stats[2],
+            GA_Rosenbrock_2_stats[2], GA_Rosenbrock_10_stats[2], GA_Rosenbrock_20_stats[2], PRS_Rosenbrock_2_stats[2], PRS_Rosenbrock_10_stats[2],
             PRS_Rosenbrock_20_stats[2]
             )
   
@@ -468,6 +494,26 @@ knitr::kable(tableData, align = "c",caption = "An example table caption.") %>%
   kableExtra::pack_rows("Rosembrock", 7, 12)
 ```
 
+#### Wynki testu studenta
 
+``` {r summary2, results='asis', message=FALSE, warning=FALSE}
+GA_Means = c( GA_Ackley_2_stats[1], GA_Ackley_10_stats[1], GA_Ackley_20_stats[1], GA_Rosenbrock_2_stats[1],
+              GA_Rosenbrock_10_stats[1], GA_Rosenbrock_20_stats[1]
+      )
+PRS_Means = c(PRS_Ackley_2_stats[1], PRS_Ackley_10_stats[1], PRS_Ackley_20_stats[1], PRS_Rosenbrock_2_stats[1], PRS_Rosenbrock_10_stats[1],
+      PRS_Rosenbrock_20_stats[1])
+tableData2 <- data.frame(
+  Dimensions = c( 2,10,20 ),
+  GA_Mean = format(GA_Means, scientific = F, digits = 2),
+  PRS_Mean =format( PRS_Means, scientific = F, digits = 2),
+  p_value = format(pValues, scientific = T),
+  interval = format(confs[seq_len(6) %% 2 == 0], scientific = F , digits = 2),
+  interval2 = format(confs[seq_len(6) %% 2 == 1], scientific = F, digits = 2)
+)
+knitr::kable(tableData2, align = "c") %>%
+  kableExtra::kable_styling() %>%
+  kableExtra::pack_rows("Ackley", 1, 3) %>%
+  kableExtra::pack_rows("Rosembrock", 4, 6)
+```
 
 
