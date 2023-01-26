@@ -4,15 +4,18 @@ output:
   html_document: default
   pdf_document: default
 ---
+```{r include = FALSE}
+knitr::opts_chunk$set(echo=FALSE)
+set.seed(420)
+nOfRuns <- 50
+populationSize <- 10
+budgetSum <- 0
+```
 ```{r initial, results='hide', message=FALSE, warning=FALSE}
   library(tidyverse)
   library(ggplot2)
   library(gridExtra)
-```
-```{r include = FALSE}
-knitr::opts_chunk$set(echo=FALSE)
-set.seed(420)
-nOfRuns <- 40
+"kableExtra"
 ```
 ## Użyte algorytmy
 
@@ -67,7 +70,7 @@ calculatePRS <- function(f,n, dimensions, budget = 1000){
   return(temp_sol)
 }
 
-calculateGA <- function(f, n, dimensions, population = 15, maxiter = 100){
+calculateGA <- function(f, n, dimensions, population = populationSize, maxiter = 100){
   minimum <- unname(smoof::getLowerBoxConstraints(f)[1])
   maximum <- unname(smoof::getUpperBoxConstraints(f)[1])
   fitness <- function(x) -f(x)
@@ -104,6 +107,7 @@ names(GA_Ackley_2_stats) <- c('średnia', 'mediana')
 GA_Ackley_2_stats
 
 budget <- (smoof::getNumberOfEvaluations(Ackley_2) - nOfRuns) / nOfRuns
+budgetSum <- budget
 ```
 
 ##### PRS
@@ -135,6 +139,7 @@ names(GA_Rosenbrock_2_stats) <- c('średnia', 'mediana')
 GA_Rosenbrock_2_stats
 
 budget <- (smoof::getNumberOfEvaluations(Rosenbrock_2) - nOfRuns) / nOfRuns
+budgetSum <- budgetSum + budget
 ```
 
 ##### PRS
@@ -174,6 +179,7 @@ names(GA_Ackley_10_stats) <- c('średnia', 'mediana')
 GA_Ackley_10_stats
 
 budget <- (smoof::getNumberOfEvaluations(Ackley_10) - nOfRuns) / nOfRuns
+budgetSum <- budgetSum + budget
 ```
 
 ##### PRS
@@ -204,6 +210,7 @@ names(GA_Rosenbrock_10_stats) <- c('średnia', 'mediana')
 GA_Rosenbrock_10_stats
 
 budget <- (smoof::getNumberOfEvaluations(Rosenbrock_10) - nOfRuns) / nOfRuns
+budgetSum <- budgetSum + budget
 ```
 
 ##### PRS
@@ -237,6 +244,7 @@ names(GA_Ackley_20_stats) <- c('średnia', 'mediana')
 GA_Ackley_20_stats
 
 budget <- (smoof::getNumberOfEvaluations(Ackley_20) - nOfRuns) / nOfRuns
+budgetSum <- budgetSum + budget
 ```
 
 ##### PRS
@@ -267,6 +275,7 @@ names(GA_Rosenbrock_20_stats) <- c('średnia', 'mediana')
 GA_Rosenbrock_20_stats
 
 budget <- (smoof::getNumberOfEvaluations(Rosenbrock_20) - nOfRuns) / nOfRuns
+budgetSum <- budgetSum + budget
 ``` 
 
 ##### PRS
@@ -435,5 +444,30 @@ t.test( solutions_GA_Rosenbrock_20, solutions_PRS_Rosenbrock_20 )
 ```
 
 <br>
+
+#### Podsumowanie
+
+``` {r summary, results='asis', message=FALSE, warning=FALSE}
+tableData <- data.frame(
+  Dimensions = c( 2,2,10,10,20,20 ),
+  Algorithm = c(replicate(3,c("GA","PRS"))),
+    Mean = c( GA_Ackley_2_stats[1], PRS_Ackley_2_stats[1], GA_Ackley_10_stats[1], PRS_Ackley_10_stats[1], GA_Ackley_20_stats[1], PRS_Ackley_20_stats[1],
+          GA_Rosenbrock_2_stats[1], PRS_Rosenbrock_2_stats[1], GA_Rosenbrock_10_stats[1], PRS_Rosenbrock_10_stats[1], GA_Rosenbrock_20_stats[1],
+          PRS_Rosenbrock_20_stats[1]
+          ),
+  Median = c( GA_Ackley_2_stats[2], PRS_Ackley_2_stats[2], GA_Ackley_10_stats[2], PRS_Ackley_10_stats[2], GA_Ackley_20_stats[2], PRS_Ackley_20_stats[2],
+            GA_Rosenbrock_2_stats[2], PRS_Rosenbrock_2_stats[2], GA_Rosenbrock_10_stats[2], PRS_Rosenbrock_10_stats[2], GA_Rosenbrock_20_stats[2],
+            PRS_Rosenbrock_20_stats[2]
+            )
+  
+)
+tableData <- format(tableData, scientific = F, digits = 2)
+knitr::kable(tableData, align = "c",caption = "An example table caption.") %>%
+  kableExtra::kable_styling() %>%
+  kableExtra::pack_rows("Ackley", 1, 6) %>%
+  kableExtra::pack_rows("Rosembrock", 7, 12)
+```
+
+
 
 
