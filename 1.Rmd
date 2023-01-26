@@ -4,15 +4,16 @@ output:
   html_document: default
   pdf_document: default
 ---
-```{r initial, results='hide', message=FALSE, warning=FALSE}
-  library(tidyverse)
-  library(ggplot2)
-  library(gridExtra)
-```
+
 ```{r include = FALSE}
 knitr::opts_chunk$set(echo=FALSE)
 set.seed(420)
 nOfRuns <- 40
+```
+```{r initial, results='hide', message=FALSE, warning=FALSE}
+  library(tidyverse)
+  library(ggplot2)
+  library(gridExtra)
 ```
 ## Użyte algorytmy
 
@@ -42,7 +43,7 @@ Global minimum: 0
 #### 2.Rosenbrock
 
 <br>
-```{r Rosenborck}
+```{r Rosenborck, fig.width=8}
 rosen <- smoof::makeRosenbrockFunction(2)
 smoof::plot3D(rosen)
 
@@ -82,6 +83,15 @@ calculateGA <- function(f, n, dimensions, population = 15, maxiter = 100){
   return(solution)
 }
 ```
+```{r helpers}
+generateStats <- function(dataset){
+  cmean <- mean(dataset)
+  cmedian <- median(dataset)
+  stats <- c(cmean, cmedian)
+  names(stats) <- c("Średnia", "Mediana")
+  return(stats)
+}
+```
 
 ## Przeprowadzenie prób losowych
 
@@ -97,10 +107,7 @@ Ackley_2 <- smoof::addCountingWrapper(smoof::makeAckleyFunction(2))
 smoof::resetEvaluationCounter(Ackley_2)
 solutions_GA_Ackley_2 <- calculateGA(Ackley_2, n = nOfRuns, dimensions = 2)
 
-mean_GA_Ackley_2 <- mean(solutions_GA_Ackley_2)
-median_GA_Ackley_2 <- median(solutions_GA_Ackley_2)
-GA_Ackley_2_stats <- c(mean_GA_Ackley_2,median_GA_Ackley_2)
-names(GA_Ackley_2_stats) <- c('średnia', 'mediana')
+GA_Ackley_2_stats<-generateStats(solutions_GA_Ackley_2)
 GA_Ackley_2_stats
 
 budget <- (smoof::getNumberOfEvaluations(Ackley_2) - nOfRuns) / nOfRuns
@@ -110,11 +117,7 @@ budget <- (smoof::getNumberOfEvaluations(Ackley_2) - nOfRuns) / nOfRuns
 ```{r PRS_Ackley_2}
 solutions_PRS_Ackley_2 <- calculatePRS(Ackley_2, nOfRuns, 2, budget)
 
-mean_PRS_Ackley_2 <- mean(solutions_PRS_Ackley_2)
-median_PRS_Ackley_2 <- median(solutions_PRS_Ackley_2)
-sd_PRS_Ackley_2 <- sd(solutions_PRS_Ackley_2)
-PRS_Ackley_2_stats <- c(mean_PRS_Ackley_2,median_PRS_Ackley_2)
-names(PRS_Ackley_2_stats) <- c('średnia', 'mediana')
+PRS_Ackley_2_stats<-generateStats(solutions_PRS_Ackley_2)
 PRS_Ackley_2_stats
 
 ```
@@ -130,10 +133,7 @@ Ackley_10 <- smoof::addCountingWrapper(smoof::makeAckleyFunction(10))
 smoof::resetEvaluationCounter(Ackley_10)
 solutions_GA_Ackley_10 <- calculateGA(Ackley_10, n = nOfRuns, dimensions = 10)
 
-mean_GA_Ackley_10 <- mean(solutions_GA_Ackley_10)
-median_GA_Ackley_10 <- median(solutions_GA_Ackley_10)
-GA_Ackley_10_stats <- c(mean_GA_Ackley_10,median_GA_Ackley_10)
-names(GA_Ackley_10_stats) <- c('średnia', 'mediana')
+GA_Ackley_10_stats<-generateStats(solutions_GA_Ackley_10)
 GA_Ackley_10_stats
 
 budget <- (smoof::getNumberOfEvaluations(Ackley_10) - nOfRuns) / nOfRuns
@@ -143,10 +143,7 @@ budget <- (smoof::getNumberOfEvaluations(Ackley_10) - nOfRuns) / nOfRuns
 ```{r PRS_Ackley_10}
 solutions_PRS_Ackley_10 <- calculatePRS(Ackley_10, nOfRuns, 10, budget)
 
-mean_PRS_Ackley_10 <- mean(solutions_PRS_Ackley_10)
-median_PRS_Ackley_10 <- median(solutions_PRS_Ackley_10)
-PRS_Ackley_10_stats <- c(mean_PRS_Ackley_10,median_PRS_Ackley_10)
-names(PRS_Ackley_10_stats) <- c('średnia', 'mediana')
+PRS_Ackley_10_stats<-generateStats(solutions_PRS_Ackley_10)
 PRS_Ackley_10_stats
 ```
 
@@ -160,10 +157,7 @@ Ackley_20 <- smoof::addCountingWrapper(smoof::makeAckleyFunction(20))
 smoof::resetEvaluationCounter(Ackley_20)
 solutions_GA_Ackley_20 <- calculateGA(Ackley_20, n = nOfRuns, dimensions = 20)
 
-mean_GA_Ackley_20 <- mean(solutions_GA_Ackley_20)
-median_GA_Ackley_20 <- median(solutions_GA_Ackley_20)
-GA_Ackley_20_stats <- c(mean_GA_Ackley_20,median_GA_Ackley_20)
-names(GA_Ackley_20_stats) <- c('średnia', 'mediana')
+GA_Ackley_20_stats<-generateStats(solutions_GA_Ackley_20)
 GA_Ackley_20_stats
 
 budget <- (smoof::getNumberOfEvaluations(Ackley_20) - nOfRuns) / nOfRuns
@@ -173,10 +167,7 @@ budget <- (smoof::getNumberOfEvaluations(Ackley_20) - nOfRuns) / nOfRuns
 ```{r PRS_Ackley_20}
 solutions_PRS_Ackley_20 <- calculatePRS(Ackley_20, nOfRuns, 20, budget)
 
-mean_PRS_Ackley_20 <- mean(solutions_PRS_Ackley_20)
-median_PRS_Ackley_20 <- median(solutions_PRS_Ackley_20)
-PRS_Ackley_20_stats <- c(mean_PRS_Ackley_20,median_PRS_Ackley_20)
-names(PRS_Ackley_20_stats) <- c('średnia', 'mediana')
+PRS_Ackley_20_stats<-generateStats(solutions_PRS_Ackley_20)
 PRS_Ackley_20_stats
 ```
 
@@ -213,10 +204,7 @@ Rosenbrock_2 <- smoof::addCountingWrapper(smoof::makeRosenbrockFunction(2))
 smoof::resetEvaluationCounter(Rosenbrock_2)
 solutions_GA_Rosenbrock_2 <- calculateGA(Rosenbrock_2, n = nOfRuns, dimensions = 2)
 
-mean_GA_Rosenbrock_2 <- mean(solutions_GA_Rosenbrock_2)
-median_GA_Rosenbrock_2 <- median(solutions_GA_Rosenbrock_2)
-GA_Rosenbrock_2_stats <- c(mean_GA_Rosenbrock_2,median_GA_Rosenbrock_2)
-names(GA_Rosenbrock_2_stats) <- c('średnia', 'mediana')
+GA_Rosenbrock_2_stats<-generateStats(solutions_GA_Rosenbrock_2)
 GA_Rosenbrock_2_stats
 
 budget <- (smoof::getNumberOfEvaluations(Rosenbrock_2) - nOfRuns) / nOfRuns
@@ -226,10 +214,7 @@ budget <- (smoof::getNumberOfEvaluations(Rosenbrock_2) - nOfRuns) / nOfRuns
 ```{r PRS_Rosenbrock_2}
 solutions_PRS_Rosenbrock_2 <- calculatePRS(Rosenbrock_2, nOfRuns, 2, budget)
 
-mean_PRS_Rosenbrock_2 <- mean(solutions_PRS_Rosenbrock_2)
-median_PRS_Rosenbrock_2 <- median(solutions_PRS_Rosenbrock_2)
-PRS_Rosenbrock_2_stats <- c(mean_PRS_Rosenbrock_2,median_PRS_Rosenbrock_2)
-names(PRS_Rosenbrock_2_stats) <- c('średnia', 'mediana')
+PRS_Rosenbrock_2_stats<-generateStats(solutions_PRS_Rosenbrock_2)
 PRS_Rosenbrock_2_stats
 ```
 
@@ -243,10 +228,7 @@ Rosenbrock_10 <- smoof::addCountingWrapper(smoof::makeRosenbrockFunction(10))
 smoof::resetEvaluationCounter(Rosenbrock_10)
 solutions_GA_Rosenbrock_10 <- calculateGA(Rosenbrock_10, n = nOfRuns, dimensions = 10)
 
-mean_GA_Rosenbrock_10 <- mean(solutions_GA_Rosenbrock_10)
-median_GA_Rosenbrock_10 <- median(solutions_GA_Rosenbrock_10)
-GA_Rosenbrock_10_stats <- c(mean_GA_Rosenbrock_10,median_GA_Rosenbrock_10)
-names(GA_Rosenbrock_10_stats) <- c('średnia', 'mediana')
+GA_Rosenbrock_10_stats<-generateStats(solutions_GA_Rosenbrock_10)
 GA_Rosenbrock_10_stats
 
 budget <- (smoof::getNumberOfEvaluations(Rosenbrock_10) - nOfRuns) / nOfRuns
@@ -256,10 +238,7 @@ budget <- (smoof::getNumberOfEvaluations(Rosenbrock_10) - nOfRuns) / nOfRuns
 ```{r PRS_Rosenbrock_10}
 solutions_PRS_Rosenbrock_10 <- calculatePRS(Rosenbrock_10, nOfRuns, 10, budget)
 
-mean_PRS_Rosenbrock_10 <- mean(solutions_PRS_Rosenbrock_10)
-median_PRS_Rosenbrock_10 <- median(solutions_PRS_Rosenbrock_10)
-PRS_Rosenbrock_10_stats <- c(mean_PRS_Rosenbrock_10,median_PRS_Rosenbrock_10)
-names(PRS_Rosenbrock_10_stats) <- c('średnia', 'mediana')
+PRS_Rosenbrock_10_stats<-generateStats(solutions_PRS_Rosenbrock_10)
 PRS_Rosenbrock_10_stats
 ```
 #### 2.3 Dwadzieścia wymiarów
@@ -272,10 +251,7 @@ Rosenbrock_20 <- smoof::addCountingWrapper(smoof::makeRosenbrockFunction(20))
 smoof::resetEvaluationCounter(Rosenbrock_20)
 solutions_GA_Rosenbrock_20 <- calculateGA(Rosenbrock_20, n = nOfRuns, dimensions = 20)
 
-mean_GA_Rosenbrock_20 <- mean(solutions_GA_Rosenbrock_20)
-median_GA_Rosenbrock_20 <- median(solutions_GA_Rosenbrock_20)
-GA_Rosenbrock_20_stats <- c(mean_GA_Rosenbrock_20,median_GA_Rosenbrock_20)
-names(GA_Rosenbrock_20_stats) <- c('średnia', 'mediana')
+GA_Rosenbrock_20_stats<-generateStats(solutions_GA_Rosenbrock_20)
 GA_Rosenbrock_20_stats
 
 budget <- (smoof::getNumberOfEvaluations(Rosenbrock_20) - nOfRuns) / nOfRuns
@@ -285,22 +261,21 @@ budget <- (smoof::getNumberOfEvaluations(Rosenbrock_20) - nOfRuns) / nOfRuns
 ```{r PRS_Rosenbrock_20}
 solutions_PRS_Rosenbrock_20 <- calculatePRS(Rosenbrock_20, nOfRuns, 20, budget)
 
-mean_PRS_Rosenbrock_20 <- mean(solutions_PRS_Rosenbrock_20)
-median_PRS_Rosenbrock_20 <- median(solutions_PRS_Rosenbrock_20)
-PRS_Rosenbrock_20_stats <- c(mean_PRS_Rosenbrock_20,median_PRS_Rosenbrock_20)
-names(PRS_Rosenbrock_20_stats) <- c('średnia', 'mediana')
+PRS_Rosenbrock_20_stats<-generateStats(solutions_PRS_Rosenbrock_20)
 PRS_Rosenbrock_20_stats
+
 ```
 ```{r mean plot rosenbrock}
 
-  names_Rosenbrock <- c("2", "10", "20", "2", "10", "20")
+  names_Rosenbrock <- c(2, 10, 20, 2, 10, 20)
   df_Rosenbrock <- data.frame("mean"= c(mean_GA_Rosenbrock_2, mean_GA_Rosenbrock_10, mean_GA_Rosenbrock_20,mean_PRS_Rosenbrock_2, mean_PRS_Rosenbrock_10, mean_PRS_Rosenbrock_20), "names"=names_Rosenbrock, "algorithm"=c(replicate(3, "GA"),replicate(3, "PRS")))
   df_Rosenbrock[,'names']<-factor(df_Rosenbrock[,'names'])
+  df_Rosenbrock = df_Rosenbrock %>% arrange(names)
 ggplot(df_Rosenbrock,                                      
-       aes(x = reorder(names, mean),
+       aes(x = names,
            y = mean,
            group = 1, color=algorithm )) +
-  geom_point(size=4)+scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))+
+geom_point(size=4)+scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))+
   theme(axis.ticks.x=element_blank())+ggtitle("Średnie minima funkcji Rosenberg") +
   theme(plot.title = element_text(hjust = 0.5))+labs(x = "dimensions")
 ```
