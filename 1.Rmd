@@ -11,7 +11,7 @@ knitr::opts_chunk$set(message = FALSE)
 knitr::opts_chunk$set(fig.align = "center")
 set.seed(420)
 nOfRuns <- 50
-populationSize <- 15
+populationSize <- 14
 budgetSum <- 0
 pValues <- c()
 confs <- c()
@@ -203,7 +203,7 @@ ggplot(df_Ackley,
   theme(plot.title = element_text(hjust = 0.5))+labs(x = "dimensions")
 ```
 <br>
-W każdym z testowanych wymiaróW widzimy przewagę algorytmu GA nad PRS. <br>
+W każdym z testowanych wymiarów widzimy przewagę algorytmu GA nad PRS. <br>
 Średnia minimów znaleznionych przez algorytm genetyczny przy 2 wymiarach jest ok `r round(PRS_Ackley_2_stats[1]/GA_Ackley_2_stats[1], 0)` razy mniejsza od tej wyznaczonej Poszukiwaniem przypadkowym.<br>
 W kolejnych wymiarach odpowiednio `r round(PRS_Ackley_10_stats[1]/GA_Ackley_10_stats[1], 0)` razy większa i `r round(PRS_Ackley_20_stats[1]/GA_Ackley_20_stats[1], 1)` raza większa.
 
@@ -304,8 +304,8 @@ ggplot(df_Rosenbrock,
 W funkcji Rosenbrocka widzimy mniejszą różnice w wynikach niż w Acklaya przy 2 wymiarach: <br>
 średnie minimum dla GA ~ `r format(GA_Rosenbrock_2_stats[1], digits = 2)` <br>
 średnie minimum dla PRS ~ `r format(PRS_Rosenbrock_2_stats[1], digits = 2)` <br>
-Przy tych wynikach należy jednak spojrzeć na mediane, która w przypadku GA jest `r round(GA_Rosenbrock_2_stats[2]/GA_Rosenbrock_2_stats[2], 0)` razy mniejsza niż jego średnia. Może to świadczyć o dużym rozproszeniu wyników oraz występowaniu elementów odstających.<br>
-Kolejne wymiary wskazują na przewage GA, w których średnie minimum było większe od tego uzyskanego za pomocą PRS 60 razy dla 10 wymiarów i 40 dla 20.
+Przy tych wynikach należy jednak spojrzeć na mediane, która w przypadku GA jest `r round(PRS_Rosenbrock_2_stats[2]/GA_Rosenbrock_2_stats[2], 0)` razy mniejsza niż jego średnia. Może to świadczyć o dużym rozproszeniu wyników oraz występowaniu elementów odstających.<br>
+Kolejne wymiary wskazują na przewage GA, w których średnie minimum było większe od tego uzyskanego za pomocą PRS `r round(PRS_Rosenbrock_10_stats[1]/GA_Rosenbrock_10_stats[1], 0)` razy dla 10 wymiarów i `r round(PRS_Rosenbrock_20_stats[1]/GA_Rosenbrock_20_stats[1], 0)` dla 20.
 <br>
 ```{r dataframe, results='hide', message=FALSE, warning=FALSE}
   r1 <- replicate(6 * nOfRuns, "PRS")
@@ -343,7 +343,7 @@ Kolejne wymiary wskazują na przewage GA, w których średnie minimum było wię
 #### Funkcja Ackley'a 2 wymiary
 
 ##### Rozłożenie wyników
-```{r plot_Ackley_2, echo=FALSE,message=FALSE, warning=FALSE}
+```{r plot_Ackley_2, fig.width=8}
   plot_Ackley_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
@@ -382,7 +382,7 @@ t1
 #### Funkcja Ackley'a 10 wymiarów
 
 <br>
-```{r plot_Ackley_10,message=FALSE, warning=FALSE}
+```{r plot_Ackley_10, fig.width=8}
   plot_Ackley_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
@@ -409,7 +409,7 @@ t2
 #### Funkcja Ackley'a 20 wymiarów
 
 <br>
-```{r plot_Ackley_20,message=FALSE, warning=FALSE}
+```{r plot_Ackley_20, fig.width=8}
   plot_Ackley_20_hist <- ggplot(df %>% filter(dimensions == 20, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
@@ -432,9 +432,9 @@ t3
 #### Funkcja Rosenbrock'a 2 wymiary
 
 <br>
-```{r plot_Rosenbrock_2,message=FALSE, warning=FALSE}
+```{r plot_Rosenbrock_2, fig.width=8}
   plot_Rosenbrock_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
-  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=0.2 ) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=0.5 ) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
   plot_PRS_Rosenbrock_2_violin <- df %>% filter(algorithm == "PRS", fun == "Rosenbrock", dimensions == 2) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
         axis.ticks.x=element_blank())+stat_summary(fun="mean", color = "black", shape=20)
@@ -455,8 +455,8 @@ t3
   mean_GA_Rosenbrock_2_clean <- mean(solutions_GA_Rosenbrock_2_clean)
   
 ```
-Podobnie jak w przypadku funkcji Ackley'a, Algorytm GA posiada wartości odstające o dużej odległości od mediany.
-Opuszczenie ich w procesie liczenia średniej powoduje spadek średniej minimum z `r format(GA_Rosenbrock_2_stats[1], digits = 2)` do `r format(mean_GA_Rosenbrock_2_clean, digits = 2)`<br>
+Podobnie jak w przypadku funkcji Ackley'a, Algorytm GA posiada wartości odstające w dużym stopniu od mediany.
+Odrzucenie tych watrości powoduje spadek średniego minimum z `r format(GA_Rosenbrock_2_stats[1], digits = 2)` do `r format(mean_GA_Rosenbrock_2_clean, digits = 2)`<br>
 ```{r t.test_Rosenbrock_2}
 t4 = t.test( solutions_GA_Rosenbrock_2, solutions_PRS_Rosenbrock_2 )
 pValues <- append(pValues, t4$p.value)
@@ -468,7 +468,7 @@ t4
 #### Funkcja Rosenbrock'a 10 wymiarów
 
 <br>
-```{r plot_Rosenbrock_10,message=FALSE, warning=FALSE}
+```{r plot_Rosenbrock_10, fig.width=8}
   plot_Rosenbrock_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=5000) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
@@ -494,9 +494,9 @@ t5
 #### Funkcja Rosenbrock'a 20 wymiarów
 
 <br>
-```{r plot_Rosenbrock_20}
+```{r plot_Rosenbrock_20, fig.width=8}
   plot_Rosenbrock_20_hist <- ggplot(df %>% filter(dimensions == 20, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
-  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=10000) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=25000) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
   plot_PRS_Rosenbrock_20_violin <- df %>% filter(algorithm == "PRS", fun == "Rosenbrock", dimensions == 20) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
         axis.ticks.x=element_blank())+stat_summary(fun="mean", color = "black", shape=20)
@@ -516,15 +516,14 @@ t6
 <br>
 
 Prawie wszystkie t.testy wykazały p-wartość jest bardzo mała. Można z dużym prawdopodobieństwem odrzucić hipotezę bazową i przyjąć, że funkcje zwaracają różne wyniki.<br>
-Jedynym wyjątkiem jest funkcja Rosenbrocka dla 2 wymiaru. Aby pokazać prawdziwość hipotezy alterantywnej w tym przypadku, należałoby najprawdopodobniej zwiększyć budżet.
-
+Jedynym wyjątkiem jest funkcja Rosenbrocka dla 2 wymiaru. Jednak przy zwiększonym budżecie wartości różną się na tyle, że otrzymana p-watość pozwala na odrzucenie hipotezy bazowej.
 
 #### Podsumowanie
 Testy przeprowadzone powyżej, wykazały wyższość algorytmu GA nad PRS. Jest ona szczególnie widoczna przy większej ilości wymiarów.
 Największą wadą algorymu GA zdaje się być duży rozrzut pomiędzy próbami.
 
 
-Średnio wykorzystany budżet na jedną iterację `r budgetSum`
+Średnio wykorzystany budżet na jedną iterację `r round(budgetSum, 0)`
 
 ``` {r summary, results='asis', message=FALSE, warning=FALSE}
 tableData <- data.frame(
@@ -545,8 +544,8 @@ knitr::kable(tableData, align = "c") %>%
   kableExtra::kable_styling() %>%
   kableExtra::pack_rows("Ackley", 1, 6) %>%
   kableExtra::pack_rows("Rosembrock", 7, 12) %>%
-  kableExtra::row_spec(1:3, bold = T, color = "white", background = "#AAA")%>%
-  kableExtra::row_spec(7:9, bold = T, color = "white", background = "#AAA")
+  kableExtra::row_spec(1:3, color = "white", background = "#AAA")%>%
+  kableExtra::row_spec(7:9, color = "white", background = "#AAA")
 ```
 
 #### Wynki testu studenta
@@ -559,16 +558,16 @@ PRS_Means = c(PRS_Ackley_2_stats[1], PRS_Ackley_10_stats[1], PRS_Ackley_20_stats
       PRS_Rosenbrock_20_stats[1])
 tableData2 <- data.frame(
   Dimensions = c( 2,10,20 ),
-  GA_Mean = format(GA_Means, scientific = F, digits = 2),
-  PRS_Mean =format( PRS_Means, scientific = F, digits = 2),
+  GA_Mean = round(unname(GA_Means), 2),
+  PRS_Mean = round(unname(PRS_Means), 2),
   p_value = format(pValues, scientific = T),
-  interval = format(confs[seq_len(6) %% 2 == 1], scientific = F , digits = 2),
-  interval2 = format(confs[seq_len(6) %% 2 == 0], scientific = F, digits = 2)
+  interval = round(confs[seq_len(6) %% 2 == 1], 2),
+  interval2 = round(confs[seq_len(6) %% 2 == 0], 2)
 )
 knitr::kable(tableData2, align = "c") %>%
   kableExtra::kable_styling() %>%
   kableExtra::pack_rows("Ackley", 1, 3) %>%
   kableExtra::pack_rows("Rosembrock", 4, 6)%>%
-  kableExtra::column_spec(2, bold = T, color = "white", background = "#AAA")
+  kableExtra::column_spec(2, color = "white", background = "#AAA")
 ```
 
