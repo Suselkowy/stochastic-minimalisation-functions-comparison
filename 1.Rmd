@@ -353,8 +353,21 @@ Kolejne wymiary wskazują na przewage GA, w których średnie minimum było wię
         axis.ticks.x=element_blank())+stat_summary(fun="mean", color = "black", shape=20)
 
   grid.arrange(plot_Ackley_2_hist, arrangeGrob(plot_GA_Ackley_2_violin, plot_PRS_Ackley_2_violin), ncol=2,top = "Ackley 2 dimensions" )
-```
 
+```
+```{r Ackley_2_summary}
+  quartiles <- quantile((df %>% filter(algorithm == "GA", fun == "Ackley", dimensions == 2))$values, probs=c(.25, .75), na.rm = FALSE)
+IQR <- IQR((df %>% filter(algorithm == "GA", fun == "Ackley", dimensions == 2))$values)
+Lower <- quartiles[1] - 1.5*IQR
+Upper <- quartiles[2] + 1.5*IQR 
+solutions_GA_Ackley_2_clean <- (df %>% filter(algorithm == "GA", fun == "Ackley", dimensions == 2, values > Lower, values < Upper))$values
+
+mean_GA_Ackley_2_clean <- mean(solutions_GA_Ackley_2_clean)
+  
+```
+Tak jak przypuszczaliśmy, odnosząc się wcześneij do wartości średniej i mediany, algorytm ga posiada wartości odstające znacznie zmniejszające średnią minimów.<br>
+Opuszczenie ich w procesie liczenia średniej powoduje spadek średniej minimum z `r format(GA_Ackley_2_stats[1], digits = 2)` do `r format(mean_GA_Ackley_2_clean, digits = 2)`<br>
+Wyniki algorytmu PRS, są rozłożone równomiernie wokół mediany, bez wartości odstających.
 
 ```{r t.test_Ackley_2, echo=FALSE}
 t1 = t.test( solutions_GA_Ackley_2, solutions_PRS_Ackley_2 )
@@ -362,7 +375,6 @@ pValues <- append(pValues, t1$p.value)
 confs <- append(confs, t1$conf.int)
 t1
 ```
-p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założyć, że funkcje zwaracają różne wyniki
 
 <br>
 
@@ -380,7 +392,9 @@ p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założ
         axis.ticks.x=element_blank())+stat_summary(fun="mean", color = "black", shape=20)
 
   grid.arrange(plot_Ackley_10_hist, arrangeGrob(plot_GA_Ackley_10_violin, plot_PRS_Ackley_10_violin), ncol=2,top = "Ackley 10 dimensions" )
+  
 ```
+Przy wyższych wymiarach wartości zarówno Algorytmu GA jak i PRS są równomiernie rozłożone z lepszymi wynikami metody genetycznej.
 ```{r t.test_Ackley_10}
 t2 = t.test( solutions_GA_Ackley_10, solutions_PRS_Ackley_10 )
 pValues <- append(pValues, t2$p.value)
@@ -427,11 +441,37 @@ t3
 
   grid.arrange(plot_Rosenbrock_2_hist, arrangeGrob(plot_GA_Rosenbrock_2_violin, plot_PRS_Rosenbrock_2_violin), ncol=2,top = "Rosenbrock 2 dimensions" )
 ```
+```{r Rosenbrock_2_summary}
+  temp <- (df %>% filter(algorithm == "GA", fun == "Rosenbrock", dimensions == 2))$values
+  quartiles <- quantile(temp, probs=c(.25, .75), na.rm = FALSE)
+  IQR <- IQR(temp)
+  Lower <- quartiles[1] - 1.5*IQR
+  Upper <- quartiles[2] + 1.5*IQR 
+  solutions_GA_Ackley_2_clean <- (df %>% filter(algorithm == "GA", fun == "Rosenbrock", dimensions == 2, values > Lower, values < Upper))$values
+  
+  mean_GA_Rosenbrock_2_clean <- mean(solutions_GA_Ackley_2_clean)
+  
+```
+Podobnie jak w przypadku funkcji Ackley'a, Algorytm GA posiada wartości odstające o dużej odległości od mediany.
+Opuszczenie ich w procesie liczenia średniej powoduje spadek średniej minimum z `r format(GA_Rosenbrock_2_stats[1], digits = 2)` do `r format(mean_GA_Rosenbrock_2_clean, digits = 2)`<br>
 ```{r t.test_Rosenbrock_2}
 t4 = t.test( solutions_GA_Rosenbrock_2, solutions_PRS_Rosenbrock_2 )
 pValues <- append(pValues, t4$p.value)
 confs <- append(confs, t4$conf.int)
 t4
+```
+<br>
+Jest to jedyna z prób w których wartość p-value nie pozwala na odrzucenie hipotezy zerowej.
+Usunięcie z wykresów wartośći ostających, pozwala zobaczyć ich podobieństwo
+<br>
+```{r plot_Rosenbrock_2_clean,message=FALSE, warning=FALSE}
+  plot_PRS_Rosenbrock_2_violin <- df %>% filter(algorithm == "PRS", fun == "Rosenbrock", dimensions == 2) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+stat_summary(fun="mean", color = "black", shape=20)
+  
+  plot_GA_Rosenbrock_2_violin <-  df %>% filter(algorithm == "GA", fun == "Rosenbrock", dimensions == 2, values > Lower, values < Upper) %>% ggplot(aes(x=dimensions, y=values, color="red")) +  geom_violin()+ geom_boxplot(width=0.1)+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+stat_summary(fun="mean", color = "black", shape=20)+ scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
+
+  grid.arrange(plot_GA_Rosenbrock_2_violin, plot_PRS_Rosenbrock_2_violin, ncol=2,top = "Rosenbrock 2 dimensions cleared" )
 ```
 <br>
 
@@ -450,6 +490,9 @@ t4
 
   grid.arrange(plot_Rosenbrock_10_hist, arrangeGrob(plot_GA_Rosenbrock_10_violin, plot_PRS_Rosenbrock_10_violin), ncol=2,top = "Rosenbrock 10 dimensions" )
 ```
+<br>
+Wyższe wymiary wyraźnie pokazują różnice w rozkładach wyników GA i PRS.
+<br>
 ```{r t.test_Rosenbrock_10}
 t5 = t.test( solutions_GA_Rosenbrock_10, solutions_PRS_Rosenbrock_10 )
 pValues <- append(pValues, t5$p.value)
@@ -482,8 +525,14 @@ t6
 
 <br>
 
+Prawie wszystkie t.testy wykazały p-wartość jest bardzo mała. Można z dużym prawdopodobieństwem odrzucić hipotezę bazową i przyjąć, że funkcje zwaracają różne wyniki.<br>
+Jedynym wyjątkiem jest funkcja Rosenbrocka dla 2 wymiaru. Aby pokazać prawdziwość hipotezy alterantywnej w tym przypadku, należałoby najprawdopodobniej zwiększyć budżet.
+
 
 #### Podsumowanie
+Testy przeprowadzone powyżej, wykazały wyższość algorytmu GA nad PRS. Jest ona szczególnie widoczna przy większej ilości wymiarów.
+Największą wadą algorymu GA zdaje się być duży rozrzut pomiędzy próbami.
+
 
 Średnio wykorzystany budżet na jedną iterację `r budgetSum`
 
