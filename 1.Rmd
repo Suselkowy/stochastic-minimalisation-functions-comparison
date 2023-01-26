@@ -112,6 +112,7 @@ solutions_PRS_Ackley_2 <- calculatePRS(Ackley_2, nOfRuns, 2, budget)
 
 mean_PRS_Ackley_2 <- mean(solutions_PRS_Ackley_2)
 median_PRS_Ackley_2 <- median(solutions_PRS_Ackley_2)
+sd_PRS_Ackley_2 <- sd(solutions_PRS_Ackley_2)
 PRS_Ackley_2_stats <- c(mean_PRS_Ackley_2,median_PRS_Ackley_2)
 names(PRS_Ackley_2_stats) <- c('średnia', 'mediana')
 PRS_Ackley_2_stats
@@ -180,17 +181,18 @@ PRS_Ackley_20_stats
 ```
 
 ```{r mean hist}
-  names_Ackley <- c("GA_Ackley_2", "GA_Ackley_10", "GA_Ackley_20", "PRS_Ackley_2", "PRS_Ackley_10", "PRS_Ackley_20")
-  df_Ackley <- data.frame("mean"=c(mean_GA_Ackley_2, mean_GA_Ackley_10, mean_GA_Ackley_20, mean_PRS_Ackley_2, mean_PRS_Ackley_10, mean_PRS_Ackley_20), "names"=names_Ackley, "algorithm"=c(replicate(3, "GA"),replicate(3, "PRS")))
+  names_Ackley <- c("2", "10", "20", "2", "10", "20")
+  df_Ackley <- data.frame("mean"=c(mean_GA_Ackley_2, mean_GA_Ackley_10, mean_GA_Ackley_20, mean_PRS_Ackley_2, mean_PRS_Ackley_10, mean_PRS_Ackley_20), "names"=names_Ackley, "algorithm"=c(replicate(3, "GA"),replicate(3, "PRS")), dimensions=c(2,10,20,2,10,20) )
   df_Ackley[,'names']<-factor(df_Ackley[,'names'])
+  df_Ackley[,'algorithm']<-factor(df_Ackley[,'algorithm'])
+  df_Ackley[,'dimensions']<-factor(df_Ackley[,'dimensions'])
 ggplot(df_Ackley,                                      
        aes(x = reorder(names, mean),
            y = mean,
-           group = 1, color=algorithm)) +
-  geom_point()+
-  theme(axis.title.x=element_blank(),
-        axis.ticks.x=element_blank())+ggtitle("Średnie minima funkcji Ackley") +
-  theme(plot.title = element_text(hjust = 0.5))
+           group = dimensions, color=algorithm)) +
+  geom_point(size=4)+
+  theme(axis.ticks.x=element_blank())+ggtitle("Średnie minima funkcji Ackley") +
+  theme(plot.title = element_text(hjust = 0.5))+labs(x = "dimensions")
 ```
 <br>
 W każdym z testowanych wymiaróW widzimy przewagę algorytmu GA nad PRS. <br>
@@ -291,17 +293,16 @@ PRS_Rosenbrock_20_stats
 ```
 ```{r mean plot rosenbrock}
 
-  names_Rosenbrock <- c("GA_Rosen_2", "GA_Rosen_10", "GA_Rosen_20", "PRS_Rosen_2", "PRS_Rosen_10", "PRS_Rosen_20")
+  names_Rosenbrock <- c("2", "10", "20", "2", "10", "20")
   df_Rosenbrock <- data.frame("mean"= c(mean_GA_Rosenbrock_2, mean_GA_Rosenbrock_10, mean_GA_Rosenbrock_20,mean_PRS_Rosenbrock_2, mean_PRS_Rosenbrock_10, mean_PRS_Rosenbrock_20), "names"=names_Rosenbrock, "algorithm"=c(replicate(3, "GA"),replicate(3, "PRS")))
   df_Rosenbrock[,'names']<-factor(df_Rosenbrock[,'names'])
 ggplot(df_Rosenbrock,                                      
        aes(x = reorder(names, mean),
            y = mean,
-           group = 1, color=algorithm)) +
-  geom_point() + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))+
-  theme(axis.title.x=element_blank(),
-        axis.ticks.x=element_blank())+ggtitle("Średnie minima funkcji Rosenberg") +
-  theme(plot.title = element_text(hjust = 0.5))
+           group = 1, color=algorithm )) +
+  geom_point(size=4)+scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))+
+  theme(axis.ticks.x=element_blank())+ggtitle("Średnie minima funkcji Rosenberg") +
+  theme(plot.title = element_text(hjust = 0.5))+labs(x = "dimensions")
 ```
 <br>
 W funkcji Rosenbrocka widzimy mniejszą różnice w wynikach niż w Acklaya przy 2 wymiarach: <br>
@@ -346,7 +347,7 @@ Kolejne wymiary wskazują na przewage GA, w których średnie minimum było wię
 #### Funkcja Ackley'a 2 wymiary
 
 ##### Rozłożenie wyników
-```{r plot_Ackley_2, echo=FALSE}
+```{r plot_Ackley_2, echo=FALSE,message=FALSE, warning=FALSE}
   plot_Ackley_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
@@ -370,7 +371,7 @@ p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założ
 #### Funkcja Ackley'a 10 wymiarów
 
 <br>
-```{r plot_Ackley_10}
+```{r plot_Ackley_10,message=FALSE, warning=FALSE}
   plot_Ackley_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
@@ -390,7 +391,7 @@ t.test( solutions_GA_Ackley_10, solutions_PRS_Ackley_10 )
 #### Funkcja Ackley'a 20 wymiarów
 
 <br>
-```{r plot_Ackley_20}
+```{r plot_Ackley_20,message=FALSE, warning=FALSE}
   plot_Ackley_20_hist <- ggplot(df %>% filter(dimensions == 20, fun == "Ackley"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
@@ -410,7 +411,7 @@ t.test( solutions_GA_Ackley_20, solutions_PRS_Ackley_20 )
 #### Funkcja Rosenbrock'a 2 wymiary
 
 <br>
-```{r plot_Rosenbrock_2}
+```{r plot_Rosenbrock_2,message=FALSE, warning=FALSE}
   plot_Rosenbrock_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=0.2 ) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
@@ -430,7 +431,7 @@ t.test( solutions_GA_Rosenbrock_2, solutions_PRS_Rosenbrock_2 )
 #### Funkcja Rosenbrock'a 10 wymiarów
 
 <br>
-```{r plot_Rosenbrock_10}
+```{r plot_Rosenbrock_10,message=FALSE, warning=FALSE}
   plot_Rosenbrock_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
   geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=5000) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
