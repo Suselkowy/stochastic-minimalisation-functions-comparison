@@ -12,7 +12,7 @@ output:
 ```{r include = FALSE}
 knitr::opts_chunk$set(echo=FALSE)
 set.seed(420)
-nOfRuns <- 50
+nOfRuns <- 40
 ```
 ## Użyte funkcje
 
@@ -49,7 +49,7 @@ calculatePRS <- function(f,n, dimensions, budget = 1000){
   return(temp_sol)
 }
 
-calculateGA <- function(f, n, dimensions, population = 10, maxiter = 100){
+calculateGA <- function(f, n, dimensions, population = 15, maxiter = 100){
   minimum <- unname(smoof::getLowerBoxConstraints(f)[1])
   maximum <- unname(smoof::getUpperBoxConstraints(f)[1])
   fitness <- function(x) -f(x)
@@ -81,6 +81,7 @@ solutions_GA_Ackley_2 <- calculateGA(Ackley_2, n = nOfRuns, dimensions = 2)
 mean_GA_Ackley_2 <- mean(solutions_GA_Ackley_2)
 mean_GA_Ackley_2
 budget <- (smoof::getNumberOfEvaluations(Ackley_2) - nOfRuns) / nOfRuns
+budget
 ```
 
 ##### 1.1.1.2 PRS
@@ -253,7 +254,7 @@ mean_PRS_Rosenbrock_20
 ##### Rozłożenie wyników
 ```{r plot_Ackley_2, echo=FALSE}
   plot_Ackley_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Ackley"), aes(x=values, color=algorithm))+
-  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
   plot_PRS_Ackley_2_violin <- df %>% filter(algorithm == "PRS", fun == "Ackley", dimensions == 2) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
@@ -277,7 +278,7 @@ p-wartość jest bardzo mała więc można z dużym prawdopodobieństwem założ
 <br>
 ```{r plot_Ackley_10}
   plot_Ackley_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Ackley"), aes(x=values, color=algorithm))+
-  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
   plot_PRS_Ackley_10_violin <- df %>% filter(algorithm == "PRS", fun == "Ackley", dimensions == 10) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
@@ -297,7 +298,7 @@ t.test( solutions_GA_Ackley_10, solutions_PRS_Ackley_10 )
 <br>
 ```{r plot_Ackley_20}
   plot_Ackley_20_hist <- ggplot(df %>% filter(dimensions == 20, fun == "Ackley"), aes(x=values, color=algorithm))+
-  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
   plot_PRS_Ackley_20_violin <- df %>% filter(algorithm == "PRS", fun == "Ackley", dimensions == 20) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
@@ -317,7 +318,7 @@ t.test( solutions_GA_Ackley_20, solutions_PRS_Ackley_20 )
 <br>
 ```{r plot_Rosenbrock_2}
   plot_Rosenbrock_2_hist <- ggplot(df %>% filter(dimensions == 2, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
-  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=1)
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=0.1 ) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
   plot_PRS_Rosenbrock_2_violin <- df %>% filter(algorithm == "PRS", fun == "Rosenbrock", dimensions == 2) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
@@ -337,7 +338,7 @@ t.test( solutions_GA_Rosenbrock_2, solutions_PRS_Rosenbrock_2 )
 <br>
 ```{r plot_Rosenbrock_10}
   plot_Rosenbrock_10_hist <- ggplot(df %>% filter(dimensions == 10, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
-  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=5000)
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=5000) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
   plot_PRS_Rosenbrock_10_violin <- df %>% filter(algorithm == "PRS", fun == "Rosenbrock", dimensions == 10) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
@@ -357,7 +358,7 @@ t.test( solutions_GA_Rosenbrock_10, solutions_PRS_Rosenbrock_10 )
 <br>
 ```{r plot_Rosenbrock_20}
   plot_Rosenbrock_20_hist <- ggplot(df %>% filter(dimensions == 20, fun == "Rosenbrock"), aes(x=values, color=algorithm))+
-  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=10000)
+  geom_histogram(fill="white", alpha=0.5, position="identity",binwidth=10000) + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
 
   plot_PRS_Rosenbrock_20_violin <- df %>% filter(algorithm == "PRS", fun == "Rosenbrock", dimensions == 20) %>% ggplot(aes(x=dimensions, y=values, color="blue")) +  geom_violin(color="lightblue") +  geom_boxplot(width=0.1, color="lightblue")+ theme(legend.position = "none",axis.title.x = element_blank(),axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
