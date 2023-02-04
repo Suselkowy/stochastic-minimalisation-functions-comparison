@@ -4,6 +4,9 @@ output:
   html_document: default
   pdf_document: default
 ---
+Jakub Sus
+<br>
+Jeremiasz Śliwiński
 ```{r include = FALSE}
 knitr::opts_chunk$set(echo=FALSE)
 knitr::opts_chunk$set(warning = FALSE)
